@@ -266,7 +266,7 @@ function draw() {
     // Clear
     ctx.beginPath();
     ctx.clearRect(0,0, 28800, 40099);
-    // k * this.col, k * this.row, k, k
+
     // Draw map
     const k = config.tileSize;
     for (let r = 0; r < config.rowsCount; r++) {
