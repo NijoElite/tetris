@@ -11,13 +11,7 @@ const config = {
 const blocks = [];
 let activeTetromino = null;
 
-const status = [];
-for (let row = 0; row < config.rowsCount; row++) {
-    status[row] = [];
-    for (let col = 0; col < config.colsCount; col++) {
-        status[row][col] = 0;
-    }
-}
+
 
 /* CLASSES */
 class Block {
@@ -287,37 +281,55 @@ function generateNew() {
     if (activeTetromino !== null) {
         activeTetromino.getBlocks().forEach(block => {
             blocks.push(block);
-
-            status[block.row][block.col] = 1;
         });
     }
 
     let type = Math.floor(Math.random() * 7);
     activeTetromino = new Tetromino(type);
 
-    removeLines();
+    removeRows();
 }
 
-function removeLines() {
+function removeRows() {
     const rowsToRemove = {};
-    let count = 0;
+    const shift = new Array(config.rowsCount).fill(0); // how many positions each row should go down
+
+    // Create matrix which represent map
+    const status = [];
+    for (let row = 0; row < config.rowsCount; row++) {
+        status[row] = [];
+        for (let col = 0; col < config.colsCount; col++) {
+            status[row][col] = 0;
+        }
+    }
+
+    blocks.forEach(block => {
+       status[block.row][block.col] = 1;
+    });
 
     // Find which rows must be removed
     for (let row = 0; row < config.rowsCount; row++) {
         let isFull = true;
+
         for (let col = 0; col < config.colsCount; col++) {
             if (status[row][col] === 0) {
                 isFull = false;
             }
         }
 
-        if (isFull) {
-            rowsToRemove[row] = true;
-            count++;
+        if (!isFull) {
+            continue;
+        }
+
+        rowsToRemove[row] = true;
+
+        // Increase counters for each row
+        for (let i = 0; i < row; i++) {
+            shift[i]++;
         }
     }
 
-    // Remove
+    // Remove these rows
     for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
         if (rowsToRemove[block.row]) {
@@ -327,9 +339,10 @@ function removeLines() {
         }
     }
 
-    // Move down all blocks
+    // Move down rows
     for (let i = 0; i < blocks.length; i++) {
-        for (let j = 0; j < count; j++) {
+        const block = blocks[i];
+        for (let j = 0; j < shift[block.row]; j++) {
             blocks[i].row++;
         }
     }
