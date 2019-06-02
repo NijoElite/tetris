@@ -217,22 +217,23 @@ class Tetromino {
 function keyHandler (e) {
     let dir;
 
-    if(e.key === 'r') {
-        if (activeTetromino.canRotate())
-        {
-            activeTetromino.rotate();
-            draw();
-        }
-    } else
+
     if (e.key === 'a' || e.key === 'A') {
         dir = 0;
-    } else
-    if (e.key === 'd' || e.key === 'd') {
+    }
+    if (e.key === 'd' || e.key === 'D') {
         dir = 1;
-    } else
+    }
     if (e.key === 's' || e.key === 'S') {
         dir = 2;
-    } else {
+    }
+    
+    if (e.key === 'r' && activeTetromino.canRotate()) {
+        activeTetromino.rotate();
+        draw();
+    }
+
+    if (typeof dir === "undefined") {
         return;
     }
 
