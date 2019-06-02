@@ -1,4 +1,13 @@
 const canvas = document.getElementById('tetrisCanvas');
+const scoreSpan = document.getElementById('score');
+const timeSpan = document.getElementById('time');
+const linesSpan = document.getElementById('lines');
+
+// Score
+let score = 0;
+let time = 0;
+let lines = 0;
+
 const ctx = canvas.getContext('2d');
 
 const config = {
@@ -10,8 +19,6 @@ const config = {
 /* GLOBAL VAR */
 const blocks = [];
 let activeTetromino = null;
-
-
 
 /* CLASSES */
 class Block {
@@ -212,7 +219,6 @@ class Tetromino {
     }
 }
 
-
 /* KEY */
 function keyHandler (e) {
     let dir;
@@ -256,6 +262,14 @@ document.addEventListener('keydown', keyHandler);
 
 /* FUNCTIONS */
 function draw() {
+    // Score
+
+    linesSpan.innerHTML = `Lines: <b>${lines}</b>`;
+    timeSpan.innerHTML = `Time: <b>${Math.round(time)} s</b>`;
+    scoreSpan.innerHTML = `Score: <b>${score}</b>`;
+
+
+    /* GRAPHIC */
 
     // Clear
     ctx.beginPath();
@@ -307,15 +321,14 @@ function removeRows() {
        status[block.row][block.col] = 1;
     });
 
+    let rowsDeleted = 0;
 
     // Find which rows must be removed
     for (let row = 0; row < config.rowsCount; row++) {
         let isFull = true;
 
         for (let col = 0; col < config.colsCount; col++) {
-            if (status[row][col] === 0) {
-                isFull = false;
-            }
+            isFull = status[row][col] === 0 ? false : isFull;
         }
 
         if (!isFull) {
@@ -323,13 +336,17 @@ function removeRows() {
         }
 
         rowsToRemove[row] = true;
+        rowsDeleted++; // increase lines counter (score)
 
         // Increase counters for each row
         for (let i = 0; i < row; i++) {
             shift[i]++;
         }
-
     }
+
+    // Calculate score
+    score += 100 * (Math.pow(2, rowsDeleted) - 1);
+    lines += rowsDeleted;
 
     // Remove these rows
     for (let i = 0; i < blocks.length; i++) {
@@ -362,6 +379,7 @@ function end() {
 
 /* MAIN TIMER */
 const mainInterval = setInterval(() => {
+    time += 0.2;
 
     // Create new at start
     if (activeTetromino === null) {
@@ -378,6 +396,8 @@ const mainInterval = setInterval(() => {
     } else {
         activeTetromino.move(2);
     }
+
+
 
     draw();
 }, 200);
