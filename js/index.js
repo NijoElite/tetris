@@ -227,7 +227,7 @@ function keyHandler (e) {
     if (e.key === 's' || e.key === 'S') {
         dir = 2;
     }
-    
+
     if (e.key === 'r' && activeTetromino.canRotate()) {
         activeTetromino.rotate();
         draw();
