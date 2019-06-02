@@ -129,7 +129,7 @@ class Tetromino {
         });
     }
 
-    tryRotate() {
+    canRotate() {
         const ghostTetromino = this.copy();
         ghostTetromino.rotate();
 
@@ -190,7 +190,7 @@ class Tetromino {
         return false;
     }
 
-    tryMove(dir) {
+    canMove(dir) {
         const ghostTetromino = this.copy();
         ghostTetromino.move(dir);
 
@@ -218,12 +218,11 @@ function keyHandler (e) {
     let dir;
 
     if(e.key === 'r') {
-        if (activeTetromino.tryRotate())
+        if (activeTetromino.canRotate())
         {
             activeTetromino.rotate();
             draw();
         }
-        return;
     } else
     if (e.key === 'a' || e.key === 'A') {
         dir = 0;
@@ -237,7 +236,7 @@ function keyHandler (e) {
         return;
     }
 
-    const isCollide = !activeTetromino.tryMove(dir);
+    const isCollide = !activeTetromino.canMove(dir);
 
     // if it cannot move down, then it will be stopped
     if (dir === 2 && isCollide) {
@@ -259,7 +258,7 @@ function draw() {
 
     // Clear
     ctx.beginPath();
-    ctx.clearRect(0,0, 28800, 40099);
+    ctx.clearRect(0,0, 99999, 99999);
 
     // Draw map
     const k = config.tileSize;
@@ -307,6 +306,7 @@ function removeRows() {
        status[block.row][block.col] = 1;
     });
 
+
     // Find which rows must be removed
     for (let row = 0; row < config.rowsCount; row++) {
         let isFull = true;
@@ -327,22 +327,35 @@ function removeRows() {
         for (let i = 0; i < row; i++) {
             shift[i]++;
         }
+
     }
+    const flag = !!rowsToRemove[19];
+
 
     // Remove these rows
     for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
         if (rowsToRemove[block.row]) {
+            console.log(block.row + ' removed');
             blocks.splice(i, 1);
-            status[block.row][block.col] = 0;
             i--;
         }
+    }
+
+    if (flag) {
+        console.log(blocks);
     }
 
     // Move down rows
     for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
-        for (let j = 0; j < shift[block.row]; j++) {
+
+        if (rowsToRemove[block.row]) {
+            continue;
+        }
+
+        const shiftCount = shift[block.row];
+        for (let j = 0; j < shiftCount; j++) {
             blocks[i].row++;
         }
     }
@@ -350,25 +363,25 @@ function removeRows() {
 
 function end() {
     clearInterval(mainInterval);
-
     alert('You lost');
 }
 
 /* MAIN TIMER */
 const mainInterval = setInterval(() => {
+
+    // Create new at start
     if (activeTetromino === null) {
         generateNew();
     }
-    else if (!activeTetromino.tryMove(2)) {
-        generateNew();
 
+    // Create new if cannot move down
+    if (!activeTetromino.canMove(2)) {
+        generateNew();
         // if the block crashed right after respawn, then the end of the game
         if (activeTetromino.checkCollide()) {
             end();
         }
-        return;
-    }
-    else {
+    } else {
         activeTetromino.move(2);
     }
 
