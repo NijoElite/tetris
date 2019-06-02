@@ -329,21 +329,14 @@ function removeRows() {
         }
 
     }
-    const flag = !!rowsToRemove[19];
-
 
     // Remove these rows
     for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
         if (rowsToRemove[block.row]) {
-            console.log(block.row + ' removed');
             blocks.splice(i, 1);
             i--;
         }
-    }
-
-    if (flag) {
-        console.log(blocks);
     }
 
     // Move down rows
