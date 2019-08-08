@@ -175,25 +175,25 @@ class Tetromino {
     }
 
     checkCollide() {
-        const ghostBlocks = this.getBlocks();
+        const allBlocks = this.getBlocks();
 
         // check collide with end of map
-        for (let i = 0; i < ghostBlocks.length; i++) {
-            let ghost = ghostBlocks[i];
+        for (let i = 0; i < allBlocks.length; i++) {
+            let block = allBlocks[i];
             // check collide with end of map
-            if (ghost.row < 0 || ghost.row >= config.rowsCount ||
-                ghost.col < 0 || ghost.col >= config.colsCount) {
+            if (block.row < 0 || block.row >= config.rowsCount ||
+                block.col < 0 || block.col >= config.colsCount) {
                 return true;
             }
         }
 
         // check for collides with blocks
         for (let i = 0; i < blocks.length; i++) {
-            let block = blocks[i];
+            let firstBlock = blocks[i];
 
-            for (let j = 0; j < ghostBlocks.length; j++) {
-                let ghost = ghostBlocks[j];
-                if (block.row === ghost.row && block.col === ghost.col) {
+            for (let j = 0; j < allBlocks.length; j++) {
+                let secondBlock = allBlocks[j];
+                if (firstBlock.row === secondBlock.row && firstBlock.col === secondBlock.col) {
                     return true;
                 }
             }
@@ -212,10 +212,10 @@ class Tetromino {
         let copiedBlocks = [];
         this.blocks.forEach(block => copiedBlocks.push(block.copy()));
 
-        let copied = new Tetromino(this.type);
-        copied.blocks = copiedBlocks;
+        let copiedTetromino = new Tetromino(this.type);
+        copiedTetromino.blocks = copiedBlocks;
 
-        return copied;
+        return copiedTetromino;
     }
 
     getBlocks() {
