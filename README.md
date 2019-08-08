@@ -1,1 +1,2 @@
-# tetris
+# Tetris
+Just run index.html
