@@ -108,6 +108,8 @@ class Tetromino {
                 this.blocks.push(new Block(1,4,"#6DF500"));
                 this.blocks.push(new Block(1,5,"#6DF500"));
                 break;
+            default: 
+                throw new Error(`Invalid argument: type`);
         }
 
     }
