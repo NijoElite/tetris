@@ -225,25 +225,19 @@ class Tetromino {
 
 /* KEY */
 function keyHandler (e) {
-    let dir;
-
-
-    if (e.key === 'a' || e.key === 'A') {
-        dir = 0;
-    }
-    if (e.key === 'd' || e.key === 'D') {
-        dir = 1;
-    }
-    if (e.key === 's' || e.key === 'S') {
-        dir = 2;
+    const dirMap = {
+        'KeyA': 0,
+        'KeyD': 1,
+        'KeyS': 2,
     }
 
-    if (e.key === 'r' && activeTetromino.canRotate()) {
+    if (e.code === 'KeyR' && activeTetromino.canRotate()) {
         activeTetromino.rotate();
         draw();
     }
 
-    if (typeof dir === "undefined") {
+    const dir = dirMap[e.code];
+    if (typeof dir === 'undefined') {
         return;
     }
 
