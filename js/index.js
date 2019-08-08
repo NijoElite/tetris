@@ -163,6 +163,8 @@ class Tetromino {
         } else if (dir === 2) {
             dRow = 1;
             dCol = 0;
+        } else {
+            return;
         }
 
         for (let i = 0; i < this.blocks.length; i++) {
